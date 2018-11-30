@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class HomeVC: UIViewController {
     
@@ -58,6 +59,8 @@ class HomeVC: UIViewController {
     var contractionLayer: CAShapeLayer!
     var animatingLayer: CAShapeLayer!
     
+    var speechSynthesier = AVSpeechSynthesizer()
+    
     
     //MARK:- view lifecycle
     override func viewDidLoad() {
@@ -66,6 +69,8 @@ class HomeVC: UIViewController {
         configureTopView()
         
         configureTableView()
+        
+        speechSynthesier.delegate = self
         
         //this is beacause when the app goes to the background it stopes animating
         //so every time the app comes back the foreground w activate the animation again
@@ -94,6 +99,7 @@ class HomeVC: UIViewController {
     
     @objc private func contractionBtnPressed(_ sender: UIButton) {
             viewModel.pauseLayer(layer: shapLayer)
+        synthesizeSpeech(formString: "weak little bitch!")
     }
     
     
@@ -104,6 +110,7 @@ class HomeVC: UIViewController {
         shapLayer.strokeEnd = 0
         viewModel.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
         self.percentageLabel.text = "\(self.viewModel.count)"
+        synthesizeSpeech(formString: "breathe you little shit")
         
         let animation = viewModel.getStrokeAnimation()
         shapLayer.add(animation, forKey: "shapeLayer")
@@ -115,12 +122,23 @@ class HomeVC: UIViewController {
         viewModel.count -= 1
         if viewModel.count == 0
         {
+            synthesizeSpeech(formString: "Hold it in for ever")
             viewModel.timer.invalidate()
+        }
+        else if viewModel.count <= 3
+        {
+            synthesizeSpeech(formString: "\(viewModel.count)")
         }
         DispatchQueue.main.async {
             self.percentageLabel.text = "\(self.viewModel.count)"
         }
         
+    }
+    
+    func synthesizeSpeech(formString string: String)
+    {
+        let speechUtterance = AVSpeechUtterance(string: string)
+        speechSynthesier.speak(speechUtterance)
     }
     
    
@@ -222,4 +240,8 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
+}
+
+extension HomeVC: AVSpeechSynthesizerDelegate {
+    
 }

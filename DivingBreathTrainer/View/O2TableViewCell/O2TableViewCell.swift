@@ -40,7 +40,7 @@ class O2TableViewCell: UITableViewCell {
         if viewModel.isHeader {
             sequanceNumberLabel.text = ""
             holdTimeLabel.text = "Hold"
-            breathTimeLabel.text = "Breath"
+            breathTimeLabel.text = "Breathe"
 
         }
         else {
