@@ -28,9 +28,6 @@ class CircleModel
     //to make the stroke has a nice round look to it
     Layer.lineCap = CAShapeLayerLineCap.round
     
-    //to put the circle in the center
-//        Layer.position = myView.center
-    
     return Layer
 }
     
@@ -40,6 +37,15 @@ class CircleModel
     layer.timeOffset = pausedTime
     
 }
+    
+    class func resumeLayer(layer: CALayer) {
+        let pausedTime = layer.timeOffset
+        layer.speed = 1.0
+        layer.timeOffset = 0.0
+        layer.beginTime = 0.0
+        let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+        layer.beginTime = timeSincePause
+    }
     
     class func animateStroke(duration: CFTimeInterval) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
