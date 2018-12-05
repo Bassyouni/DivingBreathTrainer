@@ -22,7 +22,7 @@ class O2TableCellViewModel
             guard let sequanceNumber = model.sequanceNumber else {
                 return "-"
             }
-            return "\(sequanceNumber)"
+            return isHeader ? "" : "\(sequanceNumber)"
         }
     }
     
@@ -31,7 +31,7 @@ class O2TableCellViewModel
             guard let breathTime = model.breathTime else {
                 return "-"
             }
-            return getBreathTimeString(for: breathTime)
+            return isHeader ? "Breathe" : getStringTimeFormat(for: breathTime)
         }
     }
     
@@ -40,11 +40,20 @@ class O2TableCellViewModel
             guard let holdTime = model.holdTime else {
                 return "-"
             }
-            return getBreathTimeString(for: holdTime)
+            return isHeader ? "Hold" : getStringTimeFormat(for: holdTime)
         }
     }
     
-    fileprivate func getBreathTimeString(for time: Int) -> String {
+    var contractionTime: String? {
+        get {
+            guard let contractionTime = model.contractionTime else {
+                return nil
+            }
+            return getStringTimeFormat(for: contractionTime)
+        }
+    }
+    
+    fileprivate func getStringTimeFormat(for time: Int) -> String {
         let (minutes, seconds) = secondsToMinutesAndSeconds(seconds: time)
         return String(format: "%02d:%02d", minutes, seconds)
     }

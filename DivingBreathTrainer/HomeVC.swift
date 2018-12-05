@@ -37,15 +37,39 @@ class HomeVC: UIViewController {
         return label
     }()
     
-    lazy var contractionBtn: UIButton = {
-        let btn = UIButton()
-        btn.setTitle("!", for: .normal)
-        btn.titleLabel?.font = .boldSystemFont(ofSize: 30)
-        btn.backgroundColor = .trackStrokeColor
-        btn.layer.cornerRadius = btnWidth / 2.0
-        btn.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
-        return btn
+//    lazy var contractionBtn: UIButton = {
+//        let btn = UIButton()
+//        btn.setTitle("", for: .normal)
+//        btn.setImage( #imageLiteral(resourceName: "lungs") , for: .normal)
+//        btn.titleLabel?.font = .boldSystemFont(ofSize: 30)
+//        btn.backgroundColor = .trackStrokeColor
+//        btn.layer.cornerRadius = btnWidth / 2.0
+//        btn.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
+//        return btn
+//    }()
+    
+    lazy var contractionButton: CircleImageButton = {
+        let button = CircleImageButton(image: #imageLiteral(resourceName: "lungs"), backgroundColor: .trackStrokeColor)
+        button.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
+        return button
     }()
+    
+    lazy var startButton: CircleImageButton = {
+        let button = CircleImageButton(image: #imageLiteral(resourceName: "start"), backgroundColor: .blue)
+        button.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+//    lazy var startBtn: UIButton = {
+//        let btn = UIButton()
+//        btn.setTitle("", for: .normal)
+//        btn.setImage( #imageLiteral(resourceName: "start") , for: .normal)
+//        btn.titleLabel?.font = .boldSystemFont(ofSize: 30)
+//        btn.backgroundColor = .blue
+//        btn.layer.cornerRadius = btnWidth / 2.0
+//        btn.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
+//        return btn
+//    }()
     
     var tableView: UITableView!
     
@@ -200,8 +224,11 @@ extension HomeVC
     }
     
     fileprivate func configureButtons() {
-        topView.addSubview(contractionBtn)
-        contractionBtn.anchor(top: nil, leading: topView.leadingAnchor, bottom: topView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 15, right: 0), size: CGSize(width: btnWidth, height: btnWidth))
+        topView.addSubview(contractionButton)
+        topView.addSubview(startButton)
+        contractionButton.anchor(top: nil, leading: topView.leadingAnchor, bottom: topView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 15, right: 0), size: CGSize(width: btnWidth, height: btnWidth))
+        
+        startButton.anchor(top: nil, leading: nil, bottom: topView.bottomAnchor, trailing: topView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 10), size: CGSize(width: btnWidth, height: btnWidth))
     }
     
     fileprivate func configureTableView() {

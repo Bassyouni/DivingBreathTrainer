@@ -14,6 +14,7 @@ class O2TableViewCell: UITableViewCell {
     @IBOutlet weak var sequanceNumberLabel: UILabel!
     @IBOutlet weak var holdTimeLabel: UILabel!
     @IBOutlet weak var breathTimeLabel: UILabel!
+    @IBOutlet weak var contractionTimeLabel: UILabel!
     
     //MARK:- static variables
     static var cellIdentifier: String {
@@ -27,26 +28,24 @@ class O2TableViewCell: UITableViewCell {
         }
     }
     
+    // MARK: - cell lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         configureUI()
     }
 
+    // MARK: - initialization
     func configureUI() {
-        
+        contractionTimeLabel.isHidden = true
     }
     
     func bindUI() {
-        if viewModel.isHeader {
-            sequanceNumberLabel.text = ""
-            holdTimeLabel.text = "Hold"
-            breathTimeLabel.text = "Breathe"
-
-        }
-        else {
-            sequanceNumberLabel.text = viewModel.sequanceNumber
-            holdTimeLabel.text = viewModel.holdTime
-            breathTimeLabel.text = viewModel.breathTime
-        }
+        
+        sequanceNumberLabel.text = viewModel.sequanceNumber
+        holdTimeLabel.text = viewModel.holdTime
+        breathTimeLabel.text = viewModel.breathTime
+        contractionTimeLabel.text = viewModel.contractionTime ?? ""
+        contractionTimeLabel.isHidden = viewModel.contractionTime == nil
+        
     }
 }

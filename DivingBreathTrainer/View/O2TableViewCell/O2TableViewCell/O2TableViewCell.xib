@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -56,6 +56,12 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:45" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PpR-8f-o5d">
+                                <rect key="frame" x="125" y="30" width="39" height="20"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="14"/>
+                                <color key="textColor" red="0.58072251080000004" green="0.066734083" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -67,7 +73,10 @@
                             <constraint firstItem="A1x-Rj-vl6" firstAttribute="top" secondItem="PoT-ti-fjz" secondAttribute="top" id="NZo-Kc-Sm6"/>
                             <constraint firstAttribute="bottom" secondItem="RBv-5B-uwY" secondAttribute="bottom" id="O8e-B4-QI2"/>
                             <constraint firstItem="zH3-Sh-Alm" firstAttribute="centerX" secondItem="PoT-ti-fjz" secondAttribute="centerX" constant="20" id="QZu-yB-Hdh"/>
+                            <constraint firstItem="PpR-8f-o5d" firstAttribute="top" secondItem="fes-xe-hbl" secondAttribute="bottom" constant="-7.5" id="Ttp-vj-bTf"/>
+                            <constraint firstItem="zH3-Sh-Alm" firstAttribute="leading" secondItem="PpR-8f-o5d" secondAttribute="trailing" constant="5" id="VUL-ZL-HJX"/>
                             <constraint firstAttribute="bottom" secondItem="zH3-Sh-Alm" secondAttribute="bottom" id="Xo5-9S-ym1"/>
+                            <constraint firstAttribute="bottom" secondItem="PpR-8f-o5d" secondAttribute="bottom" constant="0.5" id="aDD-9t-ffT"/>
                             <constraint firstItem="RBv-5B-uwY" firstAttribute="top" secondItem="PoT-ti-fjz" secondAttribute="top" id="dQ3-1z-N1L"/>
                             <constraint firstItem="jtH-Yw-8yb" firstAttribute="leading" secondItem="zH3-Sh-Alm" secondAttribute="trailing" constant="5" id="eRv-j2-pyU"/>
                             <constraint firstAttribute="trailing" secondItem="jtH-Yw-8yb" secondAttribute="trailing" constant="5" id="eoQ-W5-eYb"/>
@@ -88,6 +97,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="breathTimeLabel" destination="jtH-Yw-8yb" id="YC2-4R-efW"/>
+                <outlet property="contractionTimeLabel" destination="PpR-8f-o5d" id="otD-Fr-gNc"/>
                 <outlet property="holdTimeLabel" destination="fes-xe-hbl" id="H54-ia-8zT"/>
                 <outlet property="sequanceNumberLabel" destination="RBv-5B-uwY" id="yUA-Pa-zEi"/>
             </connections>

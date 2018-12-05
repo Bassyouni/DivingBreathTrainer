@@ -19,6 +19,7 @@
 		522855ED21B19C9B003EC993 /* O2TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522855EB21B19C9B003EC993 /* O2TableViewCell.swift */; };
 		522855EE21B19C9B003EC993 /* O2TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 522855EC21B19C9B003EC993 /* O2TableViewCell.xib */; };
 		522855F121B1A684003EC993 /* O2TableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522855F021B1A684003EC993 /* O2TableCellViewModel.swift */; };
+		7CC2AAEF21B800E100831FB8 /* CircleImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2AAEE21B800E100831FB8 /* CircleImageButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		522855EB21B19C9B003EC993 /* O2TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2TableViewCell.swift; sourceTree = "<group>"; };
 		522855EC21B19C9B003EC993 /* O2TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = O2TableViewCell.xib; sourceTree = "<group>"; };
 		522855F021B1A684003EC993 /* O2TableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2TableCellViewModel.swift; sourceTree = "<group>"; };
+		7CC2AAEE21B800E100831FB8 /* CircleImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImageButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,8 +112,8 @@
 		522855EA21B19C5A003EC993 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				522855EF21B1A650003EC993 /* O2TableViewCell */,
-				522855F021B1A684003EC993 /* O2TableCellViewModel.swift */,
+				7CC2AAED21B800AE00831FB8 /* CircleImageBtn */,
+				7CC2AAEC21B8009A00831FB8 /* O2TableViewCell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -123,6 +125,23 @@
 				522855EC21B19C9B003EC993 /* O2TableViewCell.xib */,
 			);
 			path = O2TableViewCell;
+			sourceTree = "<group>";
+		};
+		7CC2AAEC21B8009A00831FB8 /* O2TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				522855EF21B1A650003EC993 /* O2TableViewCell */,
+				522855F021B1A684003EC993 /* O2TableCellViewModel.swift */,
+			);
+			path = O2TableViewCell;
+			sourceTree = "<group>";
+		};
+		7CC2AAED21B800AE00831FB8 /* CircleImageBtn */ = {
+			isa = PBXGroup;
+			children = (
+				7CC2AAEE21B800E100831FB8 /* CircleImageButton.swift */,
+			);
+			path = CircleImageBtn;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +221,7 @@
 				522855CA21B17371003EC993 /* AppDelegate.swift in Sources */,
 				522855F121B1A684003EC993 /* O2TableCellViewModel.swift in Sources */,
 				522855ED21B19C9B003EC993 /* O2TableViewCell.swift in Sources */,
+				7CC2AAEF21B800E100831FB8 /* CircleImageButton.swift in Sources */,
 				522855E621B18633003EC993 /* CircleModel.swift in Sources */,
 				522855E421B184F4003EC993 /* HomeViewModel.swift in Sources */,
 				522855DF21B17493003EC993 /* Extensions+UIView.swift in Sources */,
