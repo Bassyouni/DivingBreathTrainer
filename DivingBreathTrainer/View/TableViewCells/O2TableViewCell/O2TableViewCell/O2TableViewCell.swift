@@ -15,6 +15,8 @@ class O2TableViewCell: UITableViewCell {
     @IBOutlet weak var holdTimeLabel: UILabel!
     @IBOutlet weak var breathTimeLabel: UILabel!
     @IBOutlet weak var contractionTimeLabel: UILabel!
+    @IBOutlet weak var playImageViewForHold: UIImageView!
+    @IBOutlet weak var playImageViewForBreathe: UIImageView!
     
     //MARK:- static variables
     static var cellIdentifier: String {
@@ -37,6 +39,9 @@ class O2TableViewCell: UITableViewCell {
     // MARK: - initialization
     func configureUI() {
         contractionTimeLabel.isHidden = true
+        playImageViewForHold.isHidden = true
+        playImageViewForBreathe.isHidden = true
+        selectionStyle = .none
     }
     
     func bindUI() {

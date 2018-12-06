@@ -18,35 +18,18 @@ class HomeVC: UIViewController {
         return view
     }()
     
-    lazy var percentageLabel:UILabel = {
-        let label = UILabel()
+    lazy var percentageLabel: CustomLabel = {
+        let label = CustomLabel(fontSize: 40)
         label.text = "Start"
-        label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 40)
-        label.textColor = UIColor.white
         return label
     }()
     
-    lazy var progressLabel:UILabel = {
-        let label = UILabel()
+    lazy var progressLabel: CustomLabel = {
+        let label = CustomLabel(fontSize: 22)
         label.text = "Downloading"
-        label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 22)
-        label.textColor = UIColor.white
         label.isHidden = true
         return label
     }()
-    
-//    lazy var contractionBtn: UIButton = {
-//        let btn = UIButton()
-//        btn.setTitle("", for: .normal)
-//        btn.setImage( #imageLiteral(resourceName: "lungs") , for: .normal)
-//        btn.titleLabel?.font = .boldSystemFont(ofSize: 30)
-//        btn.backgroundColor = .trackStrokeColor
-//        btn.layer.cornerRadius = btnWidth / 2.0
-//        btn.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
-//        return btn
-//    }()
     
     lazy var contractionButton: CircleImageButton = {
         let button = CircleImageButton(image: #imageLiteral(resourceName: "lungs"), backgroundColor: .trackStrokeColor)
@@ -55,28 +38,19 @@ class HomeVC: UIViewController {
     }()
     
     lazy var startButton: CircleImageButton = {
-        let button = CircleImageButton(image: #imageLiteral(resourceName: "start"), backgroundColor: .blue)
-        button.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
+        let button = CircleImageButton(image: #imageLiteral(resourceName: "start"), backgroundColor: UIColor(red: 243/255, green: 110/255, blue: 93/255, alpha: 1) )
+        button.addTarget(self, action: #selector(startBtnPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-//    lazy var startBtn: UIButton = {
-//        let btn = UIButton()
-//        btn.setTitle("", for: .normal)
-//        btn.setImage( #imageLiteral(resourceName: "start") , for: .normal)
-//        btn.titleLabel?.font = .boldSystemFont(ofSize: 30)
-//        btn.backgroundColor = .blue
-//        btn.layer.cornerRadius = btnWidth / 2.0
-//        btn.addTarget(self, action: #selector(contractionBtnPressed(_:)), for: .touchUpInside)
-//        return btn
-//    }()
     
     var tableView: UITableView!
     
     //MARK:- variables
     let viewModel = HomeViewModel()
-    
-    let btnWidth: CGFloat = 65
+    let holdString = "Hold"
+    let breatheString = "Breathe"
+    let readyString = "Get Ready"
+    var progressString = "Start"
     
     var shapLayer: CAShapeLayer!
     var trackLayer: CAShapeLayer!
@@ -91,15 +65,12 @@ class HomeVC: UIViewController {
         super.viewDidLoad()
         
         configureTopView()
-        
         configureTableView()
         
-        speechSynthesier.delegate = self
-        
+        viewModel.delegate = self
         //this is beacause when the app goes to the background it stopes animating
         //so every time the app comes back the foreground w activate the animation again
         //        NotificationCenter.default.addObserver(self, selector: #selector(animateCircle), name: UIApplication.willEnterForegroundNotification , object: nil)
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -117,54 +88,95 @@ class HomeVC: UIViewController {
     
     
     //MARK:- actions
-    @objc func handleTap() {
-        startHoldBreathAnimation()
-    }
-    
     @objc private func contractionBtnPressed(_ sender: UIButton) {
-            viewModel.pauseLayer(layer: shapLayer)
-        synthesizeSpeech(formString: "weak little bitch!")
+        if !viewModel.isInReadyRound {
+            if !viewModel.hasContractedInRound {
+                pauseLayer(layer: shapLayer)
+                synthesizeSpeech(formString: "contractions started after \(viewModel.total - viewModel.count) seconds")
+                viewModel.hasContractedInRound = true
+            }
+        }
     }
     
+    @objc private func startBtnPressed(_ sender: UIButton) {
+        //TODO: handle pause situations
+        //add pause image
+            startReadyRound()
+    }
     
     //MARK:- methods
-    func startHoldBreathAnimation() {
-        viewModel.timer.invalidate()
-        viewModel.count = 10
-        shapLayer.strokeEnd = 0
-        viewModel.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
-        self.percentageLabel.text = "\(self.viewModel.count)"
-        synthesizeSpeech(formString: "breathe you little shit")
+    func startReadyRound() {
+        viewModel.startRound()
+        self.percentageLabel.text = "\(self.viewModel.count.getStringTimeFormat())"
+        progressString = readyString
+        self.progressLabel.text = progressString
+        self.progressLabel.isHidden = false
+        synthesizeSpeech(formString: readyString)
         
-        let animation = viewModel.getStrokeAnimation()
+        shapLayer.strokeEnd = 0
+        contractionLayer.strokeEnd = 0
+        let animation = getStrokeAnimation()
         shapLayer.add(animation, forKey: "shapeLayer")
         contractionLayer.add(animation, forKey: "contractionLayer")
     }
     
-    @objc func handleTimer() {
+    func startHoldRound() {
+        self.percentageLabel.text = "\(self.viewModel.count.getStringTimeFormat())"
+        progressString = holdString
+        self.progressLabel.text = progressString
+        synthesizeSpeech(formString: holdString)
         
-        viewModel.count -= 1
-        if viewModel.count == 0
-        {
-            synthesizeSpeech(formString: "Hold it in for ever")
-            viewModel.timer.invalidate()
+        shapLayer.strokeEnd = 0
+        contractionLayer.strokeEnd = 0
+        let animation = getStrokeAnimation()
+        shapLayer.add(animation, forKey: "shapeLayer")
+        contractionLayer.add(animation, forKey: "contractionLayer")
+    }
+    
+    func startBreathRound() {
+        self.percentageLabel.text = "\(self.viewModel.count.getStringTimeFormat())"
+        progressString = breatheString
+        self.progressLabel.text = progressString
+        synthesizeSpeech(formString: breatheString)
+        
+        shapLayer.strokeEnd = 0
+        contractionLayer.strokeEnd = 0
+        let animation = getStrokeAnimation()
+        shapLayer.add(animation, forKey: "shapeLayer")
+        contractionLayer.add(animation, forKey: "contractionLayer")
+    }
+    
+    func handleTimer(forState state: TrainingState) {
+        
+        switch state {
+        case .ready:
+            progressString = readyString
+        case .hold:
+            progressString = holdString
+        case .breathe:
+            progressString = breatheString
+        }
+        
+        if viewModel.count == 0 {
+            
         }
         else if viewModel.count <= 3
         {
             synthesizeSpeech(formString: "\(viewModel.count)")
         }
         DispatchQueue.main.async {
-            self.percentageLabel.text = "\(self.viewModel.count)"
+            self.percentageLabel.text = "\(self.viewModel.count.getStringTimeFormat())"
+            self.progressLabel.text = self.progressString
         }
         
     }
     
+    // MARK: - helper methods
     func synthesizeSpeech(formString string: String)
     {
         let speechUtterance = AVSpeechUtterance(string: string)
         speechSynthesier.speak(speechUtterance)
     }
-    
    
 }
 
@@ -173,35 +185,31 @@ extension HomeVC
 {
     fileprivate func configureTopView() {
         view.addSubview(topView)
-        
         topView.anchor(top: self.view.topAnchor, leading: self.view.leadingAnchor, bottom: nil, trailing: self.view.trailingAnchor)
         topView.heightAnchor.constraint(equalToConstant: self.view.frame.height / 2).isActive = true
-        
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
     }
     
     fileprivate func configureCircles() {
-        animatingLayer = viewModel.createTrackLayer(strokeColor: .clear, fillColor: .pulsatingFillColor)
+        animatingLayer = createTrackLayer(strokeColor: .clear, fillColor: .pulsatingFillColor)
         animatingLayer.position = topView.center
         topView.layer.addSublayer(animatingLayer)
-        
         
         //create trackLayer
         // it must be added before the shapeLayer
         // so it can be in the background and the animation happens over it
-        trackLayer = viewModel.createTrackLayer(strokeColor: .trackStrokeColor  , fillColor: .backgroundColor)
+        trackLayer = createTrackLayer(strokeColor: .trackStrokeColor  , fillColor: .backgroundColor)
         trackLayer.position = topView.center
         topView.layer.addSublayer(trackLayer)
         
         
-        contractionLayer = viewModel.createTrackLayer(strokeColor: .red, fillColor: .clear)
+        contractionLayer = createTrackLayer(strokeColor: .red, fillColor: .clear)
         contractionLayer.position = topView.center
         contractionLayer.transform = CATransform3DMakeRotation(-CGFloat.pi / 2, 0, 0, 1)
         contractionLayer.strokeEnd = 0
         topView.layer.addSublayer(contractionLayer)
         
         //main circle the actuly macke progress
-        shapLayer = viewModel.createTrackLayer(strokeColor: .white , fillColor: .clear)
+        shapLayer = createTrackLayer(strokeColor: .white , fillColor: .clear)
         shapLayer.position = topView.center
         
         //this is to rotate the cirlce to - 90 degree
@@ -215,17 +223,18 @@ extension HomeVC
     fileprivate func configureLabels() {
         topView.addSubview(percentageLabel)
         percentageLabel.frame = CGRect(x: 0, y: 0, width: 120, height: 100)
-        percentageLabel.centerInSuperview(size: CGSize(width: 120.0, height: 100.0))
+        percentageLabel.centerInSuperview(size: CGSize(width: 120.0, height: 100.0),yConstant: -15)
         
         topView.addSubview(progressLabel)
         progressLabel.frame = CGRect(x: 0, y: 0, width: 140, height: 100)
         progressLabel.center.x = topView.center.x
-        progressLabel.center.y = topView.center.y + 10
+        progressLabel.center.y = topView.center.y + 20
     }
     
     fileprivate func configureButtons() {
         topView.addSubview(contractionButton)
         topView.addSubview(startButton)
+        let btnWidth = CircleImageButton.btnWidth
         contractionButton.anchor(top: nil, leading: topView.leadingAnchor, bottom: topView.bottomAnchor, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 15, right: 0), size: CGSize(width: btnWidth, height: btnWidth))
         
         startButton.anchor(top: nil, leading: nil, bottom: topView.bottomAnchor, trailing: topView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 10), size: CGSize(width: btnWidth, height: btnWidth))
@@ -243,12 +252,30 @@ extension HomeVC
         tableView.estimatedRowHeight = 50
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.allowsSelection = false
     }
 
 }
 
+// MARK: - circle logic
+extension HomeVC
+{
+    func createTrackLayer(strokeColor: UIColor, fillColor: UIColor) -> CAShapeLayer {
+        return CircleModel.createTrackLayer(strokeColor: strokeColor, fillColor: fillColor)
+    }
+    
+    func getStrokeAnimation() -> CABasicAnimation {
+        return CircleModel.animateStroke(duration: CFTimeInterval(viewModel.total))
+    }
+    
+    func pauseLayer(layer: CALayer) {
+        CircleModel.pauseLayer(layer: layer)
+    }
+}
+
 //MARK: - table
-extension HomeVC: UITableViewDelegate, UITableViewDataSource {
+extension HomeVC: UITableViewDelegate, UITableViewDataSource
+{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.dataSoruce.count
     }
@@ -269,6 +296,22 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension HomeVC: AVSpeechSynthesizerDelegate {
+extension HomeVC: HomeViewModelDelegate {
+    
+    func didBeginHoldRound() {
+        startHoldRound()
+    }
+    
+    func didBeginBreatheRound() {
+        startBreathRound()
+    }
+    
+    func handelTimerRound(forState state: TrainingState) {
+        handleTimer(forState: state)
+    }
+    
+    func didFinishTraining() {
+        //TODO: handel finish state
+    }
     
 }

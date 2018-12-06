@@ -15,6 +15,10 @@ struct O2TableModel {
     var sequanceNumber: Int?
     var contractionTime: Int?
     
+    var hasHolded: Bool = false
+    var hasBreathed: Bool = false
+    var hasContracted: Bool = false
+    
     init(holdTime: Int?, breathTime: Int?, sequanceNumber: Int?) {
         self.holdTime = holdTime
         self.breathTime = breathTime

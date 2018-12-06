@@ -9,15 +9,17 @@
 import UIKit
 
 class CircleImageButton: UIButton {
-    let btnWidth: CGFloat = 65
+    static let btnWidth: CGFloat = 70
     
     init(image: UIImage, backgroundColor: UIColor) {
-        super.init(frame: CGRect(origin: .zero, size: CGSize(width: btnWidth, height: btnWidth)) )
+        super.init(frame: CGRect(origin: .zero, size: CGSize(width: CircleImageButton.btnWidth, height: CircleImageButton.btnWidth)) )
         self.setTitle("", for: .normal)
-        self.setImage( image , for: .normal)
         self.titleLabel?.font = .boldSystemFont(ofSize: 30)
         self.backgroundColor = backgroundColor
-        self.layer.cornerRadius = btnWidth
+        self.layer.cornerRadius = CircleImageButton.btnWidth / 2
+        let tintedImage = image.tinted(with: .white)
+        imageView?.contentMode = .scaleAspectFit
+        self.setImage( tintedImage ?? image , for: .normal)
     }
     
     required init?(coder aDecoder: NSCoder) {
