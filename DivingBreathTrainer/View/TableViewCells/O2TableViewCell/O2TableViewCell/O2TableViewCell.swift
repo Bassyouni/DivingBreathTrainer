@@ -20,7 +20,7 @@ class O2TableViewCell: UITableViewCell {
     
     //MARK:- static variables
     static var cellIdentifier: String {
-        return "O2TableViewCell"
+        return String(describing: self)
     }
     
     //MARK:- variables
@@ -51,6 +51,8 @@ class O2TableViewCell: UITableViewCell {
         breathTimeLabel.text = viewModel.breathTime
         contractionTimeLabel.text = viewModel.contractionTime ?? ""
         contractionTimeLabel.isHidden = viewModel.contractionTime == nil
+        playImageViewForHold.isHidden = !viewModel.isHoldRound
+        playImageViewForBreathe.isHidden = !viewModel.isBreatheRound
         
     }
 }

@@ -12,6 +12,8 @@ class O2TableCellViewModel
 {
     var model: O2TableModel
     var isHeader: Bool = false
+    var isBreatheRound: Bool = false
+    var isHoldRound: Bool = false
     
     var cellIdentifier: String {
         return O2TableViewCell.cellIdentifier
@@ -52,8 +54,6 @@ class O2TableCellViewModel
             return contractionTime.getStringTimeFormat()
         }
     }
-    
-    
     
     init(model: O2TableModel) {
         self.model = model

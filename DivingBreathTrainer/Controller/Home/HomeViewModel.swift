@@ -34,6 +34,7 @@ class HomeViewModel
     var delegate: HomeViewModelDelegate?
     
     var isInReadyRound: Bool = true
+    var isInMiddleOfTranning: Bool = false
     
     var state: TrainingState = .ready
     
@@ -42,6 +43,9 @@ class HomeViewModel
         populateDataSource()
     }
     
+    var isTrainerRunning: Bool = false
+    
+    
     var hasContractedInRound: Bool {
         get {
             return dataSoruce[currentIndex].model.hasContracted
@@ -49,9 +53,18 @@ class HomeViewModel
         set { dataSoruce[currentIndex].model.hasContracted = newValue }
     }
     
+    var contractionTimeInRound: Int? {
+        didSet {
+            guard (contractionTimeInRound != nil) else { return }
+            dataSoruce[currentIndex].model.contractionTime = contractionTimeInRound
+        }
+    }
+    
     //MARK:- methods
     func startRound() {
         timer.invalidate()
+        
+        isInMiddleOfTranning = true
         
         switch state {
         case .ready:
@@ -65,9 +78,12 @@ class HomeViewModel
         }
         
         count = total
+        isTrainerRunning = true
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(handleRoundTimer), userInfo: nil, repeats: true)
+        if state != .ready {
+            handleRoundTimer()
+        }
     }
-
     
     @objc func handleRoundTimer() {
         
@@ -92,25 +108,61 @@ class HomeViewModel
     }
     
     private func handleNextRound() {
-        if !dataSoruce[currentIndex].model.hasHolded {
-            state = .hold
-            startRound()
-            dataSoruce[currentIndex].model.hasHolded = true
-        }
-        else if !dataSoruce[currentIndex].model.hasBreathed {
-            state = .breathe
-            startRound()
-            dataSoruce[currentIndex].model.hasBreathed = true
-        }
-        else {
-            currentIndex += 1
-            if currentIndex < dataSoruce.count {
-                handleNextRound()
+        if currentIndex < dataSoruce.count
+        {
+            let cellViewModel = dataSoruce[currentIndex]
+            
+            if !cellViewModel.model.hasHolded {
+                state = .hold
+                startRound()
+                cellViewModel.model.hasHolded = true
+                cellViewModel.isHoldRound = true
+                cellViewModel.isBreatheRound = false
+            }
+            else if !cellViewModel.model.hasBreathed && cellViewModel.model.breathTime != nil
+            {
+                state = .breathe
+                startRound()
+                cellViewModel.model.hasBreathed = true
+                cellViewModel.isHoldRound = false
+                cellViewModel.isBreatheRound = true
             }
             else {
-                //TODO: handle table Done State
+                cellViewModel.isHoldRound = false
+                cellViewModel.isBreatheRound = false
+                currentIndex += 1
+                if currentIndex < dataSoruce.count {
+                    handleNextRound()
+                }
+                else {
+                    reset()
+                }
             }
         }
+    }
+    
+    fileprivate func reset() {
+        timer.invalidate()
+        isInMiddleOfTranning = false
+        delegate?.didFinishTraining()
+        currentIndex = 1
+        isInReadyRound = true
+        state = .ready
+        count = 0
+        total = 0
+    }
+    
+    func pauseTrainner()
+    {
+        timer.invalidate()
+        isTrainerRunning = false
+    }
+    
+    func resumeTrainer() {
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(handleRoundTimer), userInfo: nil, repeats: true)
+//        handleRoundTimer()
+        isTrainerRunning = true
+        
     }
     
     func populateDataSource() {

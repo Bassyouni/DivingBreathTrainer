@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "lungs.png",
+      "filename" : "pause.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "lungs@2x.png",
+      "filename" : "pause@2x.png",
       "scale" : "2x"
     },
     {

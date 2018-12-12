@@ -40,6 +40,7 @@ class HomeVC: UIViewController {
     lazy var startButton: CircleImageButton = {
         let button = CircleImageButton(image: #imageLiteral(resourceName: "start"), backgroundColor: UIColor(red: 243/255, green: 110/255, blue: 93/255, alpha: 1) )
         button.addTarget(self, action: #selector(startBtnPressed(_:)), for: .touchUpInside)
+        button.tintColor = .white
         return button
     }()
     
@@ -92,17 +93,57 @@ class HomeVC: UIViewController {
         if !viewModel.isInReadyRound {
             if !viewModel.hasContractedInRound {
                 pauseLayer(layer: shapLayer)
-                synthesizeSpeech(formString: "contractions started after \(viewModel.total - viewModel.count) seconds")
+                let contractionTime = viewModel.total - viewModel.count
+                synthesizeSpeech(formString: "contractions started after \(contractionTime) seconds")
                 viewModel.hasContractedInRound = true
+                viewModel.contractionTimeInRound = contractionTime
+                tableView.reloadRows(at: [ IndexPath(row: viewModel.currentIndex, section: 0) ], with: .automatic)
             }
         }
     }
     
     @objc private func startBtnPressed(_ sender: UIButton) {
-        //TODO: handle pause situations
-        //add pause image
+        if viewModel.isInMiddleOfTranning
+        {
+            
+            guard viewModel.state != .ready else { return }
+            
+            if viewModel.isTrainerRunning
+            {
+                startButton.setImage(#imageLiteral(resourceName: "fill-start"), for: .normal)
+                pauseLayer(layer: contractionLayer)
+                if !viewModel.hasContractedInRound && viewModel.state == .hold {
+                    pauseLayer(layer: shapLayer)
+                }
+                else
+                {
+                    pauseLayer(layer: shapLayer)
+                }
+                viewModel.pauseTrainner()
+            }
+            else
+            {
+                startButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+                resumeLayer(layer: contractionLayer)
+                if !viewModel.hasContractedInRound && viewModel.state == .hold {
+                    resumeLayer(layer: shapLayer)
+                }
+                else
+                {
+                    resumeLayer(layer: shapLayer)
+                }
+                viewModel.resumeTrainer()
+            }
+        }
+        else
+        {
             startReadyRound()
+            startButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+        }
+        
+        
     }
+    
     
     //MARK:- methods
     func startReadyRound() {
@@ -113,11 +154,7 @@ class HomeVC: UIViewController {
         self.progressLabel.isHidden = false
         synthesizeSpeech(formString: readyString)
         
-        shapLayer.strokeEnd = 0
-        contractionLayer.strokeEnd = 0
-        let animation = getStrokeAnimation()
-        shapLayer.add(animation, forKey: "shapeLayer")
-        contractionLayer.add(animation, forKey: "contractionLayer")
+        resetAnimation()
     }
     
     func startHoldRound() {
@@ -126,11 +163,7 @@ class HomeVC: UIViewController {
         self.progressLabel.text = progressString
         synthesizeSpeech(formString: holdString)
         
-        shapLayer.strokeEnd = 0
-        contractionLayer.strokeEnd = 0
-        let animation = getStrokeAnimation()
-        shapLayer.add(animation, forKey: "shapeLayer")
-        contractionLayer.add(animation, forKey: "contractionLayer")
+        resetAnimation()
     }
     
     func startBreathRound() {
@@ -139,6 +172,11 @@ class HomeVC: UIViewController {
         self.progressLabel.text = progressString
         synthesizeSpeech(formString: breatheString)
         
+        resetAnimation()
+    }
+    
+    fileprivate func resetAnimation() {
+        resetLayer(layer: shapLayer)
         shapLayer.strokeEnd = 0
         contractionLayer.strokeEnd = 0
         let animation = getStrokeAnimation()
@@ -271,6 +309,15 @@ extension HomeVC
     func pauseLayer(layer: CALayer) {
         CircleModel.pauseLayer(layer: layer)
     }
+    
+    func resetLayer(layer: CALayer) {
+        layer.speed = 1.0
+        layer.beginTime = 0.0
+    }
+    
+    func resumeLayer(layer: CALayer) {
+        CircleModel.resumeLayer(layer: layer)
+    }
 }
 
 //MARK: - table
@@ -299,10 +346,12 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource
 extension HomeVC: HomeViewModelDelegate {
     
     func didBeginHoldRound() {
+        tableView.reloadData()
         startHoldRound()
     }
     
     func didBeginBreatheRound() {
+        tableView.reloadData()
         startBreathRound()
     }
     
@@ -312,6 +361,10 @@ extension HomeVC: HomeViewModelDelegate {
     
     func didFinishTraining() {
         //TODO: handel finish state
+        progressLabel.text = "Great Job 💪 💪"
+        progressLabel.text = "Done!"
+        startButton.setImage(#imageLiteral(resourceName: "start"), for: .normal)
+        synthesizeSpeech(formString: "All Done, Great Job!")
     }
     
 }
