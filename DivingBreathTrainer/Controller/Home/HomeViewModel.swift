@@ -150,6 +150,7 @@ class HomeViewModel
         state = .ready
         count = 0
         total = 0
+        populateDataSource()
     }
     
     func pauseTrainner()
@@ -166,14 +167,15 @@ class HomeViewModel
     }
     
     func populateDataSource() {
+        dataSoruce.removeAll()
         
         let hedaerCellViewModel = O2TableCellViewModel(model:O2TableModel(holdTime: nil, breathTime: nil, sequanceNumber: nil))
     
         hedaerCellViewModel.isHeader = true
         dataSoruce.append(hedaerCellViewModel)
-        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 45, breathTime: 90, sequanceNumber: 1)))
-        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 60, breathTime: 90, sequanceNumber: 2)))
-        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 75, breathTime: 90, sequanceNumber: 3)))
-        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 90, breathTime: nil, sequanceNumber: 4)))
+        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 5, breathTime: 5, sequanceNumber: 1)))
+        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 5, breathTime: 5, sequanceNumber: 2)))
+        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 5, breathTime: 5, sequanceNumber: 3)))
+        dataSoruce.append(O2TableCellViewModel(model:O2TableModel(holdTime: 10, breathTime: nil, sequanceNumber: 4)))
     }
 }

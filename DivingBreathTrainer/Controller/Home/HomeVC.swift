@@ -361,8 +361,11 @@ extension HomeVC: HomeViewModelDelegate {
     
     func didFinishTraining() {
         //TODO: handel finish state
-        progressLabel.text = "Great Job 💪 💪"
-        progressLabel.text = "Done!"
+        DispatchQueue.main.async {
+            self.progressLabel.text = "Great Job 💪 💪"
+            self.percentageLabel.text = "Done!"
+        }
+        
         startButton.setImage(#imageLiteral(resourceName: "start"), for: .normal)
         synthesizeSpeech(formString: "All Done, Great Job!")
     }

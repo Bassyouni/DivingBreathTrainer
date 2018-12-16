@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         homeVC.view.backgroundColor = .white
         window?.rootViewController = homeVC
         window?.makeKeyAndVisible()
+        
+        // this because when have music on , and the app launches the music goes off
+        // this is bad UX , leave the choice to the user
+        // the fix
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.ambient, mode: AVAudioSession.Mode.moviePlayback, options: [.mixWithOthers])
         
         return true
     }
